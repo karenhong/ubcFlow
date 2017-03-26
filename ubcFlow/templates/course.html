@@ -1,0 +1,21 @@
+{% extends "template.html" %}
+{% block body %}
+{{course.description}}
+<form action="{{ url_for('add_review') }}" method="post">
+    <textarea rows="4" cols="100">Write a review</textarea>
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
+{% block list %}
+<div class="col-md-50">
+    <ul class="list-group">
+        <h3>Reviews</h3>
+        {% for review in reviews %}
+        <li class="list-group-item">
+            {{review.rating}}
+            {{review.message}}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-  <h2>Sign Up</h2>
-  {% if error %}<p class="error"><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('signup') }}" method="post">
+{% extends "template.html" %}
+{% block body %}
+<h2>Sign Up</h2>
+<form action="{{ url_for('signup') }}" method="post">
     <dl>
         <dt>First Name
         <dd><input type="text" name="f_name" required>
@@ -19,6 +13,5 @@
         <dd><input type="password" name="password" required>
         <dd><input type="submit" value="Sign up">
     </dl>
-  </form>
-</body>
-</html>
+</form>
+{% endblock %}

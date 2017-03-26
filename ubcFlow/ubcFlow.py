@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request, redirect, url_for
+from flask import Flask, abort, flash, session, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from config import SQLALCHEMY_DATABASE_URI, SECRET_KEY
 
@@ -9,8 +9,7 @@ app.secret_key = SECRET_KEY
 db = SQLAlchemy(app)
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    email = db.Column(db.String(120), unique=True)
+    email = db.Column(db.String(120), primary_key = True)
     firstName = db.Column(db.String(20))
     lastName = db.Column(db.String(20))
     password = db.Column(db.String(20))
@@ -26,7 +25,7 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     rating = db.Column(db.Integer)
     message = db.Column(db.String(300))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.Column(db.Integer, db.ForeignKey('user.email'))
     course_code = db.Column(db.Integer, db.ForeignKey('course.code'))
 
 db.create_all()
@@ -42,15 +41,37 @@ def signup():
     if request.method == 'POST':
         exists = User.query.filter_by(email=request.form['email']).first()
         if exists is None:
-            session['logged_in'] = True
             new_user = User(email=request.form['email'], firstName=request.form['f_name'], lastName=request.form['l_name'], password=request.form['password'])
             db.session.add(new_user)
             db.session.commit()
-            return render_template('index.html')
+            session['email'] =  new_user.email
+            return redirect(url_for('main'))
         else:
             error = 'There is already an account with that email'
     return render_template('signup.html', error=error)
 
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    flash('You were logged out')
+    return redirect(url_for('main'))
+
+@app.route('/login', methods=['POST'])
+def login():
+    if request.method == 'POST':
+        user = User.query.filter_by(email=request.form['email']).first()
+        if user is None or user.password != request.form['password']:
+            flash('Please check your email and password and try again.', 'error')
+        else:
+            session['email'] = user.email
+            flash('You were successfully logged in', 'success')
+        return redirect(url_for('main'))
+
+@app.route('/<code>')
+def view_course(code):
+    course = Course.query.filter_by(code=code).first()
+    reviews = Review.query.filter_by(course_code=code).all()
+    return render_template('course.html', course=course, reviews=reviews)
 if __name__ == '__main__':
     app.debug = True
     app.run()

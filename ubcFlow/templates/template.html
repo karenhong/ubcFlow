@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UBC Flow</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="header">
+    <nav>
+        <ul class="nav nav-pills pull-right">
+            {% if session.email %}
+            <li>User: {{session.email}}</li>
+            <li role="presentation"><a href="logout">Logout</a></li>
+            {% else %}
+            <li role="presentation"><a data-toggle="modal" data-target="#loginModal">Login</a></li>
+            <div id="loginModal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Login</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('login') }}" method="post">
+                                <dl>
+                                    <dt>Email:
+                                    <dd><input type="email" name="email" required>
+                                    <dt>Password:
+                                    <dd><input type="password" name="password" required>
+                                    <dd><input type="submit" value="Login">
+                                </dl>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <li role="presentation"><a href="signup">Sign Up</a></li>
+            <li role="presentation"><a href="/">Explore Courses</a></li>
+        </ul>
+    </nav>
+    <h1 class="pl-2">UBC Flow</h1>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == 'error' %}
+<div class="alert alert-danger">
+    <strong>Error</strong> {{ message }}
+</div>
+{% else %}
+<div class="alert alert-success">
+    <strong>Success</strong> {{ message }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+{% block body %}{% endblock %}
+
+{% block list %}{% endblock %}
+</body>
+</html>

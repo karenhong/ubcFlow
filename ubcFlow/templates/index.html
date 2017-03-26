@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1> HELLO WORLD </h1>
-</body>
-</html>
+{% extends "template.html" %}
+{% block body %}
+<form role="search">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search Courses">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+{% endblock %}
+{% block list %}
+<div class="col-md-50">
+    <ul class="list-group">
+        <h3>Courses</h3>
+        {% for course in courses %}
+        <a href="/{{course.code}}">
+            <li class="list-group-item">
+                {{course.code}}
+                {{course.name}}
+                {{course.year}}
+            </li>
+        </a>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
