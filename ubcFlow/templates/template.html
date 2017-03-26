@@ -29,8 +29,8 @@
                                     <dt>Email:
                                     <dd><input type="email" name="email" required>
                                     <dt>Password:
-                                    <dd><input type="password" name="password" required>
-                                    <dd style="padding-top: 20px"><input type="submit" value="Login">
+                                    <dd><input type="password" name="password" required> <br><br>
+                                    <button class="btn btn-default" type="submit"> Login </button>
                                 </dl>
                             </form>
                         </div>
@@ -64,7 +64,6 @@
 <div class="container-fluid">
     <div class="col-md-offset-2 col-md-8">
         <div class="panel panel-default"><div class="panel-body">{% block body %}{% endblock %}</div></div>
-
         {% block list %}{% endblock %}
     </div>
 </div>

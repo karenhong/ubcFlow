@@ -12,6 +12,10 @@
             <form action="{{ url_for('add_review', code=course.code) }}" method="post">
                 <h4>Add a review:</h4>
                 <div class="form-group">
+                    <label for="title">Title:</label>
+                    <textarea class="form-control" rows="1" id="title" name="title" required></textarea>
+                </div>
+                <div class="form-group">
                     <label for="rating">Rating:</label>
                     <select class="form-control" id="rating" name="rating">
                         <option>1</option>
@@ -25,23 +29,66 @@
                     <label for="review">Review:</label>
                     <textarea class="form-control" rows="4" id="review" name="message" required></textarea>
                 </div>
-                <input type="submit" value="Submit">
+                <button class="btn btn-default" type="submit">Submit</button>
             </form>
         </div>
         <ul class="list-group">
             {% for review in reviews %}
             <li class="list-group-item">
-                <div class="list-group-header"> <h4>{{review.user}}
-                    {% if review.rating > 3 %}
-                    <span class="label label-success label-as-badge pull-right">{{review.rating}}/5</span>
-                    {% elif review.rating == 3 %}}
-                    <span class="label label-warning label-as-badge pull-right">{{review.rating}}/5</span>
-                    {% else %}
-                    <span class="label label-danger label-as-badge pull-right">{{review.rating}}/5</span>
-                    {% endif %}
-                </h4>
+                <div class="list-group-heading">
+                    <h4>{{review.title}}
+                        {% if review.rating > 3 %}
+                        <span class="label label-success label-as-badge pull-right">{{review.rating}}/5</span>
+                        {% elif review.rating == 3 %}}
+                        <span class="label label-warning label-as-badge pull-right">{{review.rating}}/5</span>
+                        {% else %}
+                        <span class="label label-danger label-as-badge pull-right">{{review.rating}}/5</span>
+                        {% endif %}
+                        {% if review.user == user.email %}
+                        <button class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#reviewModal{{review.id}}" style="margin-right: 10px">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </button>
+                        {% endif %}
+                    </h4>
+                    <div id="reviewModal{{review.id}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Edit Review</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('edit_review', review_id=review.id) }}" method="post">
+                                        <div class="form-group">
+                                            <label for="edit_title">Title:</label>
+                                            <textarea class="form-control" rows="1" id="edit_title" name="edit_title" required>{{review.title}}</textarea>
+                                        </div>
+                                        <!--TODO: Pre-select previous rating-->
+                                        <div class="form-group">
+                                            <label for="edit_rating">Rating:</label>
+                                            <select class="form-control" id="edit_rating" name="edit_rating">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="edit_message">Review:</label>
+                                            <textarea class="form-control" rows="4" id="edit_message" name="edit_message" required>{{review.message}}</textarea>
+                                        </div>
+                                        <a href="{{ url_for('delete_review', review_id=review.id) }}" class="btn btn-danger" type="submit">Delete</a>
+                                        <button class="btn btn-default pull-right" type="submit">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                {{review.message}}
+                <!--TODO: create a style sheet -->
+                <p style="padding-botton: 20px"> {{review.message}} </p>
+                <p class="text-muted">{{review.user}}</p>
             </li>
             {% endfor %}
         </ul>

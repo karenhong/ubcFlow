@@ -24,6 +24,7 @@ class Course(db.Model):
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     rating = db.Column(db.Integer)
+    title = db.Column(db.String(100))
     message = db.Column(db.String(300))
     user = db.Column(db.Integer, db.ForeignKey('user.email'))
     course_code = db.Column(db.Integer, db.ForeignKey('course.code'))
@@ -71,7 +72,8 @@ def login():
 def view_course(code):
     course = Course.query.filter_by(code=code).first()
     reviews = Review.query.filter_by(course_code=code).all()
-    return render_template('course.html', course=course, reviews=reviews)
+    user = User.query.filter_by(email=session.get('email')).first()
+    return render_template('course.html', course=course, reviews=reviews, user=user)
 
 @app.route('/add<code>', methods=['POST'])
 def add_review(code):
@@ -79,7 +81,7 @@ def add_review(code):
         flash('Please login to add a comment', 'error')
     else:
         flash('New review was successfully posted', 'success')
-        review = Review(message=request.form['message'], user=session['email'], rating=request.form['rating'], course_code=code)
+        review = Review(message=request.form['message'], title=request.form['title'], user=session['email'], rating=request.form['rating'], course_code=code)
         db.session.add(review)
         db.session.commit()
     return redirect(url_for('view_course', code=code))
@@ -93,6 +95,23 @@ def search_course():
             return render_template('index.html')
         else:
             return render_template('index.html', courses=[course])
+
+@app.route('/edit<review_id>', methods=['POST'])
+def edit_review(review_id):
+    review = Review.query.filter_by(id=review_id).first()
+    if request.method == 'POST':
+        review.title = request.form['edit_title']
+        review.message = request.form['edit_message']
+        review.rating = request.form['edit_rating']
+        db.session.commit()
+    return redirect(url_for('view_course', code=review.course_code))
+
+@app.route('/delete<review_id>')
+def delete_review(review_id):
+    review = Review.query.filter_by(id=review_id).first()
+    db.session.delete(review)
+    db.session.commit()
+    return redirect(url_for('view_course', code=review.course_code))
 
 if __name__ == '__main__':
     app.debug = True
