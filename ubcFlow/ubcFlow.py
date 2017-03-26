@@ -72,6 +72,18 @@ def view_course(code):
     course = Course.query.filter_by(code=code).first()
     reviews = Review.query.filter_by(course_code=code).all()
     return render_template('course.html', course=course, reviews=reviews)
+
+@app.route('/add<code>', methods=['POST'])
+def add_review(code):
+    if not session.get('email'):
+        flash('Please login to add a comment', 'error')
+    else:
+        flash('New review was successfully posted', 'success')
+        review = Review(message=request.form['message'], user=session['email'], rating=request.form['rating'], course_code=code)
+        db.session.add(review)
+        db.session.commit()
+    return redirect(url_for('view_course', code=code))
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
