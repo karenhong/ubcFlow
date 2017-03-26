@@ -84,6 +84,16 @@ def add_review(code):
         db.session.commit()
     return redirect(url_for('view_course', code=code))
 
+@app.route('/search', methods=['POST'])
+def search_course():
+    if request.method == 'POST':
+        course = Course.query.filter_by(code=request.form['code']).first()
+        if course is None:
+            flash('No courses with that code found', 'error')
+            return render_template('index.html')
+        else:
+            return render_template('index.html', courses=[course])
+
 if __name__ == '__main__':
     app.debug = True
     app.run()

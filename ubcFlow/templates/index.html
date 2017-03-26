@@ -1,8 +1,8 @@
 {% extends "template.html" %}
 {% block body %}
-<form role="search">
+<form action="{{ url_for('search_course')}}" method="post" role="search">
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Search Courses">
+        <input type="text" name='code' class="form-control" placeholder="Search Courses">
     </div>
 </form>
 {% endblock %}
