@@ -12,7 +12,7 @@
     <nav>
         <ul class="nav nav-pills pull-right">
             {% if session.email %}
-            <li>User: {{session.email}}</li>
+            <li class="text-muted" style="padding-top: 10px; padding-right: 15px">{{session.email}}</li>
             <li role="presentation"><a href="logout">Logout</a></li>
             {% else %}
             <li role="presentation"><a data-toggle="modal" data-target="#loginModal">Login</a></li>
@@ -30,7 +30,7 @@
                                     <dd><input type="email" name="email" required>
                                     <dt>Password:
                                     <dd><input type="password" name="password" required>
-                                    <dd><input type="submit" value="Login">
+                                    <dd style="padding-top: 20px"><input type="submit" value="Login">
                                 </dl>
                             </form>
                         </div>
@@ -42,8 +42,9 @@
             <li role="presentation"><a href="/">Explore Courses</a></li>
         </ul>
     </nav>
-    <h1 class="pl-2">UBC Flow</h1>
+    <h1 class="text-primary" style="padding-left: 12px">UBC Flow</h1>
 </div>
+<hr />
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 {% for category, message in messages %}
@@ -60,8 +61,12 @@
 {% endif %}
 {% endwith %}
 
-{% block body %}{% endblock %}
+<div class="container-fluid">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="panel panel-default"><div class="panel-body">{% block body %}{% endblock %}</div></div>
 
-{% block list %}{% endblock %}
+        {% block list %}{% endblock %}
+    </div>
+</div>
 </body>
 </html>

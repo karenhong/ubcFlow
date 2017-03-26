@@ -1,36 +1,50 @@
 {% extends "template.html" %}
 {% block body %}
+<div class="panel-header"><h2>{{course.code}}</h2><h3>{{course.name}}</h3></div>
 {{course.description}}
-<form action="{{ url_for('add_review', code=course.code) }}" method="post">
-    Add a review:
-    <div class="form-group">
-        <label for="rating">Rating:</label>
-        <select class="form-control" id="rating" name="rating">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="review">Review:</label>
-        <textarea class="form-control" rows="4" id="review" name="message" required></textarea>
-    </div>
-    <input type="submit" value="Submit">
-</form>
+
 {% endblock %}
 {% block list %}
-<div class="col-md-50">
-    <ul class="list-group">
-        <h3>Reviews</h3>
-        {% for review in reviews %}
-        <li class="list-group-item">
-            {{review.user}}
-            Rating: {{review.rating}}
-            {{review.message}}
-        </li>
-        {% endfor %}
-    </ul>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h2>Reviews</h2>
+        <div class="well">
+            <form action="{{ url_for('add_review', code=course.code) }}" method="post">
+                <h4>Add a review:</h4>
+                <div class="form-group">
+                    <label for="rating">Rating:</label>
+                    <select class="form-control" id="rating" name="rating">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="review">Review:</label>
+                    <textarea class="form-control" rows="4" id="review" name="message" required></textarea>
+                </div>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <ul class="list-group">
+            {% for review in reviews %}
+            <li class="list-group-item">
+                <div class="list-group-header"> <h4>{{review.user}}
+                    {% if review.rating > 3 %}
+                    <span class="label label-success label-as-badge pull-right">{{review.rating}}/5</span>
+                    {% elif review.rating == 3 %}}
+                    <span class="label label-warning label-as-badge pull-right">{{review.rating}}/5</span>
+                    {% else %}
+                    <span class="label label-danger label-as-badge pull-right">{{review.rating}}/5</span>
+                    {% endif %}
+                </h4>
+                </div>
+                {{review.message}}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

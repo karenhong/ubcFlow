@@ -4,22 +4,23 @@
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Search Courses">
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
 </form>
 {% endblock %}
 {% block list %}
-<div class="col-md-50">
-    <ul class="list-group">
-        <h3>Courses</h3>
-        {% for course in courses %}
-        <a href="/{{course.code}}">
-            <li class="list-group-item">
-                {{course.code}}
-                {{course.name}}
-                {{course.year}}
-            </li>
-        </a>
-        {% endfor %}
-    </ul>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="list-group">
+            <h3>Courses</h3>
+            {% for course in courses %}
+            <a href="/{{course.code}}" style="text-decoration: none !important">
+                <li class="list-group-item">
+                    <strong class="col-sm-2">{{course.code}}</strong>
+                    {{course.name}}
+                    <div class="badge">Year {{course.year}}</div>
+                </li>
+            </a>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}
