@@ -1,11 +1,14 @@
-from flask import Flask, abort, flash, session, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
-from config import SQLALCHEMY_DATABASE_URI, SECRET_KEY
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-app.secret_key = SECRET_KEY
 
+app.config.update(dict(
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:iLG8ArLG6N98P@localhost/test',
+    SECRET_KEY='development key',
+))
+
+# TODO: Move database setup to separate file
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -16,8 +19,8 @@ class User(db.Model):
 
 class Course(db.Model):
     code = db.Column(db.String(10), primary_key=True)
-    name = db.Column(db.String(20))
-    description = db.Column(db.String(300))
+    name = db.Column(db.String(100))
+    description = db.Column(db.String(400))
     year = db.Column(db.Integer)
 
 
@@ -26,8 +29,8 @@ class Review(db.Model):
     rating = db.Column(db.Integer)
     title = db.Column(db.String(100))
     message = db.Column(db.String(300))
-    user = db.Column(db.Integer, db.ForeignKey('user.email'))
-    course_code = db.Column(db.Integer, db.ForeignKey('course.code'))
+    user = db.Column(db.String(120), db.ForeignKey('user.email'))
+    course_code = db.Column(db.String(10), db.ForeignKey('course.code'))
 
 db.create_all()
 
@@ -38,7 +41,6 @@ def main():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    error = None
     if request.method == 'POST':
         exists = User.query.filter_by(email=request.form['email']).first()
         if exists is None:
@@ -46,10 +48,11 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['email'] =  new_user.email
+            flash('New user created', 'success')
             return redirect(url_for('main'))
         else:
-            error = 'There is already an account with that email'
-    return render_template('signup.html', error=error)
+            flash('There is already an account with that email', 'error')
+    return render_template('signup.html')
 
 @app.route('/logout')
 def logout():
@@ -114,5 +117,4 @@ def delete_review(review_id):
     return redirect(url_for('view_course', code=review.course_code))
 
 if __name__ == '__main__':
-    app.debug = True
     app.run()

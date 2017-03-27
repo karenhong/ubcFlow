@@ -50,11 +50,11 @@
 {% for category, message in messages %}
 {% if category == 'error' %}
 <div class="alert alert-danger">
-    <strong>Error</strong> {{ message }}
+    {{ message }}
 </div>
 {% else %}
 <div class="alert alert-success">
-    <strong>Success</strong> {{ message }}
+    {{ message }}
 </div>
 {% endif %}
 {% endfor %}
