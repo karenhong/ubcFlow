@@ -1,6 +1,8 @@
-
+mydatabase.db
+__pycache__/
+.cache/
 *.xml
-
 *.pyc
-
 *.iml
+*.db
+ubcFlow/venv/
