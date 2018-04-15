@@ -1,6 +1,6 @@
 # UBC FLow
 UBC Flow is a webapp based off of https://uwflow.com/.
-It allows users to easily view, rate, and comment on courses at UBC. The purpose of this application is to provide students with information about the courses that are being offered at UBC.
+It allows users to easily view, rate, and comment on courses at UBC. The purpose of this application is to provide students with information about the courses that are being offered at UBC. This program was written as an exercise to learn Flask and is populated with fake data. 
 
 ### Set up
 1. Clone the repo and step into it
@@ -28,4 +28,3 @@ Current database schema:
 * User(**email**, first_name, last_name, password)
 * Course(**code**, name, description, year)
 * Review(**id**, rating, title, message, user_email, course_code)
-
